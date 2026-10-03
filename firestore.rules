@@ -1,0 +1,162 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function userEmail() {
+      return isSignedIn() && request.auth.token.email != null ? request.auth.token.email.lower() : '';
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && (
+        userEmail() == 'roysahil579@gmail.com' || 
+        userEmail() == 'subhojit2001mondal@gmail.com'
+      );
+    }
+
+    function getUserRole() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : (isBootstrappedAdmin() ? 'super_admin' : 'customer');
+    }
+
+    function isAdmin() {
+      return isBootstrappedAdmin() || getUserRole() == 'admin' || getUserRole() == 'super_admin';
+    }
+
+    function isAgent() {
+      return isAdmin() || getUserRole() == 'agent';
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isSignedIn() && (
+        request.auth.uid == userId && (
+          request.resource.data.role == 'customer' ||
+          (isBootstrappedAdmin() && (request.resource.data.role == 'super_admin' || request.resource.data.role == 'admin'))
+        )
+      );
+      allow update: if isAdmin() || (
+        isOwner(userId) && 
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isBlocked'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Hotels collection
+    match /hotels/{hotelId} {
+      allow read: if true;
+      allow write: if isAdmin() || (isAgent() && resource.data.agentId == request.auth.uid);
+      allow create: if isAdmin() || isAgent();
+
+      match /rooms/{roomId} {
+        allow read: if true;
+        allow write: if isAdmin() || isAgent();
+      }
+    }
+
+    // Room Inventory
+    match /roomInventory/{inventoryId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // Agents collection
+    match /agents/{agentId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Tour Packages
+    match /packages/{packageId} {
+      allow read: if true;
+      allow write: if isAdmin() || (isAgent() && (resource.data.agentId == request.auth.uid || request.resource.data.agentId == request.auth.uid));
+      allow create: if isAdmin() || isAgent();
+    }
+
+    // Services (cabs, activities, transfers)
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Bookings
+    match /bookings/{bookingId} {
+      allow read: if isAdmin() || (
+        isSignedIn() && (
+          resource.data.userId == request.auth.uid ||
+          (isAgent() && resource.data.agentId == request.auth.uid)
+        )
+      );
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin() || (
+        isSignedIn() && 
+        resource.data.userId == request.auth.uid &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['bookingStatus', 'cancellationDetails', 'updatedAt'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Reviews
+    match /reviews/{reviewId} {
+      allow read: if resource.data.status == 'approved' || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Coupons
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin() || (
+        isSignedIn() && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['timesUsed'])
+      );
+    }
+
+    // Banners
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Platform settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Audit logs
+    match /auditLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Wishlist
+    match /wishlists/{wishlistId} {
+      allow read, write: if isSignedIn() && (
+        resource == null || resource.data.userId == request.auth.uid || request.resource.data.userId == request.auth.uid
+      );
+    }
+  }
+}

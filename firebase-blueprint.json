@@ -1,0 +1,286 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with role-based access control and contact details",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 120 },
+        "phoneNumber": { "type": "string", "maxLength": 25 },
+        "role": { "type": "string", "enum": ["customer", "agent", "admin", "super_admin"] },
+        "photoURL": { "type": "string" },
+        "isBlocked": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "email", "role"]
+    },
+    "Hotel": {
+      "title": "Hotel",
+      "description": "Hotel property catalog entry with amenities, rooms, and location",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 3000 },
+        "propertyType": { "type": "string", "enum": ["hotel", "resort", "villa", "heritage", "apartment"] },
+        "starRating": { "type": "number" },
+        "city": { "type": "string", "maxLength": 100 },
+        "address": { "type": "string", "maxLength": 300 },
+        "amenities": { "type": "array" },
+        "photos": { "type": "array" },
+        "featured": { "type": "boolean" },
+        "basePrice": { "type": "number" },
+        "policies": { "type": "object" },
+        "agentId": { "type": "string" },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "city", "starRating", "basePrice"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Room type available in a hotel",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hotelId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "capacityGuests": { "type": "number" },
+        "bedType": { "type": "string", "maxLength": 50 },
+        "pricePerNight": { "type": "number" },
+        "totalRooms": { "type": "number" },
+        "amenities": { "type": "array" },
+        "photos": { "type": "array" },
+        "cancellationPolicy": { "type": "string", "maxLength": 200 }
+      },
+      "required": ["id", "hotelId", "name", "pricePerNight", "totalRooms"]
+    },
+    "RoomInventory": {
+      "title": "RoomInventory",
+      "description": "Inventory count per room per calendar date",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hotelId": { "type": "string" },
+        "roomId": { "type": "string" },
+        "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "bookedCount": { "type": "number" },
+        "totalRooms": { "type": "number" }
+      },
+      "required": ["id", "hotelId", "roomId", "date", "bookedCount", "totalRooms"]
+    },
+    "Agent": {
+      "title": "Agent",
+      "description": "Registered tour and travel agent profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "agencyName": { "type": "string", "maxLength": 150 },
+        "contactName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 25 },
+        "commissionRate": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "suspended"] },
+        "rating": { "type": "number" },
+        "totalBookings": { "type": "number" }
+      },
+      "required": ["id", "agencyName", "email", "status"]
+    },
+    "Package": {
+      "title": "Package",
+      "description": "Curated holiday tour package with day-wise itinerary",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "destination": { "type": "string", "maxLength": 100 },
+        "durationDays": { "type": "number" },
+        "durationNights": { "type": "number" },
+        "description": { "type": "string", "maxLength": 4000 },
+        "highlights": { "type": "array" },
+        "itinerary": { "type": "array" },
+        "inclusions": { "type": "array" },
+        "exclusions": { "type": "array" },
+        "pricePerPerson": { "type": "number" },
+        "departureDates": { "type": "array" },
+        "maxGroupSize": { "type": "number" },
+        "agentId": { "type": "string" },
+        "photos": { "type": "array" },
+        "isPublished": { "type": "boolean" },
+        "rating": { "type": "number" }
+      },
+      "required": ["id", "title", "destination", "durationDays", "pricePerPerson"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Travel add-ons such as cabs, sightseeing, and airport transfers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "type": { "type": "string", "enum": ["cab", "activity", "transfer"] },
+        "city": { "type": "string", "maxLength": 100 },
+        "price": { "type": "number" },
+        "description": { "type": "string", "maxLength": 1000 },
+        "duration": { "type": "string", "maxLength": 50 },
+        "vehicleOrDetails": { "type": "string", "maxLength": 150 },
+        "photos": { "type": "array" },
+        "isAvailable": { "type": "boolean" }
+      },
+      "required": ["id", "title", "type", "price"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Customer reservation for hotels, tour packages, or services",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookingNumber": { "type": "string", "maxLength": 30 },
+        "type": { "type": "string", "enum": ["hotel", "package", "service"] },
+        "userId": { "type": "string" },
+        "customerDetails": { "type": "object" },
+        "itemId": { "type": "string" },
+        "itemName": { "type": "string", "maxLength": 200 },
+        "itemDetails": { "type": "object" },
+        "checkInDate": { "type": "string" },
+        "checkOutDate": { "type": "string" },
+        "guestsCount": { "type": "number" },
+        "roomCount": { "type": "number" },
+        "totalPrice": { "type": "number" },
+        "basePrice": { "type": "number" },
+        "taxes": { "type": "number" },
+        "discount": { "type": "number" },
+        "couponCode": { "type": "string" },
+        "paymentMethod": { "type": "string", "enum": ["online", "pay_at_hotel"] },
+        "paymentStatus": { "type": "string", "enum": ["pending", "paid", "refunded"] },
+        "bookingStatus": { "type": "string", "enum": ["confirmed", "pending", "cancelled", "completed"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "bookingNumber", "type", "userId", "itemId", "totalPrice", "bookingStatus"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "User reviews and ratings for hotels or packages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookingId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string", "maxLength": 100 },
+        "targetType": { "type": "string", "enum": ["hotel", "package"] },
+        "targetId": { "type": "string" },
+        "rating": { "type": "number" },
+        "comment": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "targetId", "rating", "comment", "status"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Promotional discount codes",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "maxLength": 20 },
+        "discountType": { "type": "string", "enum": ["percentage", "flat"] },
+        "discountValue": { "type": "number" },
+        "minAmount": { "type": "number" },
+        "maxDiscount": { "type": "number" },
+        "expiryDate": { "type": "string" },
+        "usageLimit": { "type": "number" },
+        "timesUsed": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["id", "code", "discountType", "discountValue", "isActive"]
+    },
+    "Banner": {
+      "title": "Banner",
+      "description": "Homepage promotional banners and hero highlights",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "subtitle": { "type": "string", "maxLength": 200 },
+        "image": { "type": "string" },
+        "link": { "type": "string" },
+        "discountTag": { "type": "string", "maxLength": 50 },
+        "isActive": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title", "image", "isActive"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Administrative actions audit log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "adminId": { "type": "string" },
+        "adminEmail": { "type": "string" },
+        "action": { "type": "string", "maxLength": 100 },
+        "entityType": { "type": "string", "maxLength": 50 },
+        "entityId": { "type": "string", "maxLength": 100 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "adminEmail", "action", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles with role and account info"
+    },
+    "/hotels/{hotelId}": {
+      "schema": { "$ref": "#/entities/Hotel" },
+      "description": "Hotels directory"
+    },
+    "/hotels/{hotelId}/rooms/{roomId}": {
+      "schema": { "$ref": "#/entities/Room" },
+      "description": "Rooms within a hotel"
+    },
+    "/roomInventory/{inventoryId}": {
+      "schema": { "$ref": "#/entities/RoomInventory" },
+      "description": "Date-wise inventory per hotel room"
+    },
+    "/agents/{agentId}": {
+      "schema": { "$ref": "#/entities/Agent" },
+      "description": "Tour and travel operators"
+    },
+    "/packages/{packageId}": {
+      "schema": { "$ref": "#/entities/Package" },
+      "description": "Holiday and tour packages"
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/Service" },
+      "description": "Cabs, transfers, and activities"
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Customer reservations"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Verified guest reviews"
+    },
+    "/coupons/{couponId}": {
+      "schema": { "$ref": "#/entities/Coupon" },
+      "description": "Discount coupon codes"
+    },
+    "/banners/{bannerId}": {
+      "schema": { "$ref": "#/entities/Banner" },
+      "description": "Promotional homepage banners"
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Audit trails for admin operations"
+    }
+  }
+}

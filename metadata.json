@@ -1,0 +1,6 @@
+{
+  "name": "Illusion - Premium Hotel & Tour Booking Platform",
+  "description": "Book luxury hotels, curated tour packages, and travel services with real-time inventory and instant vouchers on Illusion.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

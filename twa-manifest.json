@@ -1,0 +1,40 @@
+{
+  "packageId": "com.illusion.travel",
+  "host": "ais-pre-53ue6p5fwmkwgi4tb6n22h-621399678187.asia-east1.run.app",
+  "name": "Illusion - Luxury Hotel & Tour Booking",
+  "launcherName": "Illusion",
+  "themeColor": "#082F49",
+  "navigationColor": "#082F49",
+  "backgroundColor": "#082F49",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://ais-pre-53ue6p5fwmkwgi4tb6n22h-621399678187.asia-east1.run.app/pwa-512x512.png",
+  "maskableIconUrl": "https://ais-pre-53ue6p5fwmkwgi4tb6n22h-621399678187.asia-east1.run.app/pwa-maskable-512x512.png",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://ais-pre-53ue6p5fwmkwgi4tb6n22h-621399678187.asia-east1.run.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": true
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://ais-pre-53ue6p5fwmkwgi4tb6n22h-621399678187.asia-east1.run.app/",
+  "orientation": "portrait-primary",
+  "fingerprints": [
+    {
+      "value": "14:6D:E9:44:C5:9F:5C:7E:86:42:A8:78:E9:70:C4:4C:64:84:CE:0E:44:F8:7F:42:94:DA:16:A6:58:1B:01:CE"
+    }
+  ]
+}

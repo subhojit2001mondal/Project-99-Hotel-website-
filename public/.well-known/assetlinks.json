@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.illusion.travel",
+      "sha256_cert_fingerprints": [
+        "14:6D:E9:44:C5:9F:5C:7E:86:42:A8:78:E9:70:C4:4C:64:84:CE:0E:44:F8:7F:42:94:DA:16:A6:58:1B:01:CE"
+      ]
+    }
+  }
+]
